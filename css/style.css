@@ -253,11 +253,16 @@ img {
 
 .mobile-menu a {
   display: block;
-  color: rgba(23, 20, 17, 0.9);
+  color: rgba(255, 255, 255, 0.95);
   text-decoration: none;
   font-weight: 700;
   padding: 12px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.mobile-menu a:hover,
+.mobile-menu a:focus-visible {
+  color: #ffffff;
 }
 
 .mobile-menu a:last-child {
@@ -2329,6 +2334,14 @@ span.title-line.title-line-green {
     align-items: stretch;
   }
 
+  .hero-actions .btn {
+    font-size: 1rem;
+    padding: 14px 16px;
+    min-height: 54px;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
   .btn {
     width: 100%;
   }
@@ -3333,6 +3346,8 @@ span.title-line.title-line-green {
 .pin-strip-images-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* Keeps the 2-row tiles (A/C) from becoming overly tall on desktop. */
+  grid-auto-rows: clamp(165px, 16vw, 210px);
   gap: 12px;
   align-items: stretch;
 }
