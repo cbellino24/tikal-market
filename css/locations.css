@@ -2206,7 +2206,7 @@
   background-color: #ffffff;
   background-image: none;
   padding: clamp(20px, 3.2vw, 36px) 0 clamp(28px, 4vw, 48px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: none;
 }
 
 .about-community-showcase-inner {
@@ -3097,12 +3097,19 @@
   border: solid var(--green-dark);
   border-width: 0 0.18em 0.18em 0;
   font-size: 0;
-  transform: rotate(0deg);
+  transform: rotate(45deg);
+  margin-top: -0.2em;
   transition: transform 0.2s ease;
 }
 
 .loc-faq-item[open] .loc-faq-q span.chev {
-  transform: rotate(180deg);
+  transform: rotate(225deg);
+  margin-top: 0.15em;
+}
+
+.loc-faq-q:focus-visible {
+  outline: 2px solid var(--green-dark);
+  outline-offset: 2px;
 }
 
 .loc-faq-a {
