@@ -73,6 +73,7 @@
   var dealsPrev = document.querySelector(".deals-nav-prev");
   var dealsNext = document.querySelector(".deals-nav-next");
   var dealsLoopWidth = 0;
+  var dealsTrackEl = null;
 
   function dealsScrollStep() {
     if (!dealsCarousel) return 320;
@@ -94,11 +95,10 @@
     if (!dealsCarousel || !dealsLoopWidth) return;
     var left = dealsCarousel.scrollLeft;
     // Seamless wrap: keep scrollLeft within [0, dealsLoopWidth)
-    if (left >= dealsLoopWidth) {
-      dealsCarousel.scrollLeft = left - dealsLoopWidth;
-    } else if (left < 0) {
-      dealsCarousel.scrollLeft = left + dealsLoopWidth;
-    }
+    // Use loops to handle large jumps (trackpads, momentum, repeated clicks).
+    while (left >= dealsLoopWidth) left -= dealsLoopWidth;
+    while (left < 0) left += dealsLoopWidth;
+    if (left !== dealsCarousel.scrollLeft) dealsCarousel.scrollLeft = left;
   }
 
   function syncDealsNav() {
@@ -118,13 +118,26 @@
 
   if (dealsCarousel && dealsPrev && dealsNext) {
     // Duplicate cards once to enable seamless looping.
-    var dealsTrack = dealsCarousel.querySelector(".deals-track");
-    if (dealsTrack) {
-      var cards = Array.prototype.slice.call(dealsTrack.children);
+    dealsTrackEl = dealsCarousel.querySelector(".deals-track");
+    if (dealsTrackEl) {
+      var cards = Array.prototype.slice.call(dealsTrackEl.children);
       if (cards.length > 1) {
-        dealsLoopWidth = dealsTrack.scrollWidth;
         cards.forEach(function (node) {
-          dealsTrack.appendChild(node.cloneNode(true));
+          dealsTrackEl.appendChild(node.cloneNode(true));
+        });
+        // After layout/CSS settles, compute the loop width as half of the doubled track.
+        // This avoids wrong widths on hosts where CSS/fonts load after JS runs.
+        var recalcDealsLoopWidth = function () {
+          if (!dealsTrackEl) return;
+          dealsLoopWidth = Math.round(dealsTrackEl.scrollWidth / 2);
+        };
+        window.requestAnimationFrame(function () {
+          recalcDealsLoopWidth();
+          window.requestAnimationFrame(recalcDealsLoopWidth);
+        });
+        window.addEventListener("load", recalcDealsLoopWidth);
+        window.addEventListener("resize", function () {
+          window.requestAnimationFrame(recalcDealsLoopWidth);
         });
       }
     }
